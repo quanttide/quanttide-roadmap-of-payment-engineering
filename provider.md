@@ -30,7 +30,7 @@
 
 | 模块 | 职责 | 关键设计 |
 |------|------|----------|
-| `account` | 账户与余额 | 充值登记（`recharge:{voucher_no}` 幂等）、`Lock/Save` 供结算编排 |
+| `account` | 账户与余额 | 充值登记（`recharge:{voucher_no}` 幂等）、退款登记（`refund:{voucher_no}` 幂等，余额不足 422）、`Lock/Save` 供结算编排 |
 | `transaction` | 交易账本 | `Append` 账本写入唯一入口（幂等键唯一约束、只插入不更新） |
 | `coupon` / `voucher` | 优惠券 / 代金券 | 批量发放（批次号幂等 + 发券交易）、过期惰性流转、结算时核销/抵现 |
 | `billing` | 计费规则 | 纯函数计算：满减 → 折扣 → 代金券 → 余额（规则表预留） |
@@ -41,7 +41,7 @@
 
 **API**（金额单位：整数分）：
 
-- 账户：`POST /accounts`、`POST /accounts/{id}/recharges`、`GET /accounts/{id}`、`GET /accounts/{id}/transactions`
+- 账户：`POST /accounts`、`POST /accounts/{id}/recharges`、`POST /accounts/{id}/refunds`（多退）、`GET /accounts/{id}`、`GET /accounts/{id}/transactions`
 - 优惠：`POST|GET /accounts/{id}/coupons`、`POST|GET /accounts/{id}/vouchers`
 - 订单：`POST /orders`（下单并结算）、`GET /orders/{id}`
 - 对账：`GET /accounts/{id}/statement`、`GET /reconcile/consistency`、`POST /reconcile/bank`
@@ -53,6 +53,7 @@
 | 场景 | 幂等键 | 唯一约束位置 |
 |------|--------|--------------|
 | 充值 | `recharge:{voucher_no}` | `transaction.idempotency_key` |
+| 退款（多退） | `refund:{voucher_no}` | `transaction.idempotency_key` |
 | 发券 | `issue:coupon:{batch_no}` / `issue:voucher:{batch_no}` | 发券交易幂等键（按类型命名空间） |
 | 结算 | `settle:{order_id}`（消费）；`settle:{order_id}:redeem:{kind}:{ref_id}`（核销） | `order.id` + 账本交易幂等键 |
 
