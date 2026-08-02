@@ -153,7 +153,68 @@ v0.1.0 默认顺序，由 `priority` 配置，**不改代码可调**：
 | 发券丢失 | 流水无发券记录 | 检查幂等键唯一约束，补登记同批次号 |
 | 抵扣顺序不符合预期 | 结算明细顺序异常 | 检查 `BillingRule.priority` 配置 |
 
-## 六、v0.2.0 交接参考（对「现状」表）
+## 六、Flutter 客户端（qtcloud_pay_studio）
+
+管理人员的图形化工作台：桌面客户端（Windows/macOS），把 §二 的 API 操作包装成页面。服务端 v0.1.0 仅提供 API，客户端只做展示与表单，不承载账务逻辑——结算、幂等、状态机全在服务端，客户端出错提示引导到 §五 异常处置。
+
+- 工程位置：`apps/qtcloud-pay/src/studio`（已初始化）
+- 命名：`qtcloud_pay_studio`（对齐 qtcloud_learn_studio 的工程约定）
+- 依赖：http / provider / uuid（与 qtcloud_learn_studio 一致）
+- 代码结构：`lib/screens/`（页面）、`lib/widgets/`（复用组件）、`lib/models/`（领域模型）、`lib/services/`（API 客户端）
+
+### 6.1 导航与页面
+
+桌面端左侧导航，各页面直接对应 §2.1 操作入口：
+
+| 页面 | 文件 | 主要功能 | 对应入口 |
+|------|------|---------|---------|
+| 总览 | `dashboard_screen.dart` | 里程碑状态（M1–M5）、今日待办（未对账/待结算）、快捷入口 | — |
+| 账户 | `accounts_screen.dart` | 账户列表、创建账户 | `POST /accounts` |
+| 账户详情 | `account_detail_screen.dart` | 余额、交易流水、券列表 | `GET /accounts/{id}`、`/transactions`、`/coupons`、`/vouchers` |
+| 充值登记 | `recharge_screen.dart` | 对公打款入账 | `POST /accounts/{id}/recharges` |
+| 发券 | `coupon_screen.dart` | 优惠券/代金券发放与查询 | `POST /accounts/{id}/coupons`、`/vouchers` |
+| 订单结算 | `order_screen.dart` | 下单、结算明细 | `POST /orders`、`GET /orders/{id}` |
+| 对账 | `reconcile_screen.dart` | 余额校验、CSV 比对 | `GET /accounts/{id}/statement` |
+| 参数配置 | `settings_screen.dart` | 抵扣顺序、券模板、变更登记 | —（调 §三 参数） |
+
+```mermaid
+flowchart LR
+    D[总览] --> A[账户] --> AD[账户详情]
+    D --> R[充值登记]
+    D --> C[发券]
+    D --> O[订单结算]
+    D --> RC[对账]
+    D --> S[参数配置]
+```
+
+### 6.2 关键页面说明
+
+- **充值登记页**：表单含账户（AccountPicker）、金额（AmountField，元转分）、打款凭证号（IdempotencyField，幂等键）；提交后展示余额与新增交易；重复凭证号提交报错，提示参照 §五 处置
+- **发券页**：选择类型（优惠券/代金券）后按类型展示参数——折扣券 `rate`、满减券 `threshold`+`amount`、代金券面值，以及 `scope`、`expiresAt`；发放批次号作幂等键；列表展示券状态（StatusChip）
+- **订单结算页**：表单含客户、订单金额；提交后展示 SettleDetailPanel 逐项抵扣（优惠券 → 代金券 → 余额），并更新券状态与余额
+- **对账页**：一键导出各账户 statement；导入银行流水 CSV；展示 ReconcileDiffTable 差异行（余额 vs 交易求和）；异常引导到 §五
+
+### 6.3 复用组件（lib/widgets/）
+
+| 组件 | 用途 | 关键行为 |
+|------|------|---------|
+| `MoneyText` | 金额展示（分 → 元） | 充值 + 绿 / 消费 − 红；整数分渲染，无浮点误差 |
+| `StatusChip` | 状态标签 | 券：已发放/已使用/已过期；订单：已结算/待结算（对齐 qtcloud_learn_studio） |
+| `AccountPicker` | 客户/账户选择 | 搜索 + 返回账户 id |
+| `IdempotencyField` | 幂等键输入 | 必填 + 唯一性提示（凭证号/批次号/订单号） |
+| `AmountField` | 金额输入（元） | 非负、两位小数校验，提交转分 |
+| `TransactionList` | 交易流水 | 类型/金额/时间/来源，任意交易可追溯 |
+| `SettleDetailPanel` | 结算明细 | 逐项列出抵扣与余额变化 |
+| `ReconcileDiffTable` | 对账差异表 | 差异行定位 + 跳转流水 |
+| `MilestoneCard` | 里程碑状态卡 | M1–M5 状态（⬜/🚧/✅）与验收结论（读 §一） |
+
+### 6.4 数据与服务层
+
+- `lib/models/`：Account / Transaction / Coupon / Voucher / Order / BillingRule，与[领域模型](../insight/model.md)一一对应
+- `lib/services/pay_api.dart`：封装 §2.1 全部端点；金额统一 `AmountField` 转分、`MoneyText` 转元
+- 客户端不做账务计算，展示的数据均来自服务端校验后的结果
+
+## 七、v0.2.0 交接参考（对「现状」表）
 
 通道能力在 v0.0.1（2026-07-11）已具备，账本跑通后作为交易来源接入，**模型不变，变的只是交易来源**：
 
