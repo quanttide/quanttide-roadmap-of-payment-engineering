@@ -13,6 +13,7 @@
 
 ## 文档
 
+- [支付工程的路线图](index.md) — 目标、待决策事项、待补齐事项与演进顺序
 - [platform/provider.md](platform/provider.md) — 服务端路线图（账本核心 v0.1.0）
 - [platform/studio.md](platform/studio.md) — 管理人员操作台（日常操作、参数配置、验收清单）
 - [platform/tests.md](platform/tests.md) — 测试用例（场景级集成测试，覆盖 M1–M4 验收）
