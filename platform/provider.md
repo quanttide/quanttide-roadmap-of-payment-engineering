@@ -6,12 +6,12 @@
 
 ## 背景
 
-依据支付工程意图（[intention](../intention/index.md)）与领域模型（[model](../insight/model.md)）：
+依据支付工程意图（[intention](../../intention/index.md)）与领域模型（[model](../../insight/model.md)）：
 
 - **意图**：不接入支付先完成支付——对公打款入账、发放优惠券/代金券、维护虚拟钱包记账
 - **模型**：核心不是钱，而是交易事实；账户、交易、余额、优惠券、代金券、计费规则、订单
 - **反直觉点**：先建模拟账户，再对接支付——支付通道是后接的可替换层
-- **洞察**：三业务计费同构（单价 × 数量 + 行模型）——账本核心与业务无关，是「行的流水账」，支付云定位纯执行引擎（[billing-isomorphism](../insight/billing-isomorphism.md)）
+- **洞察**：三业务计费同构（单价 × 数量 + 行模型）——账本核心与业务无关，是「行的流水账」，支付云定位纯执行引擎（[billing-isomorphism](../../insight/billing-isomorphism.md)）
 
 ## 交付状态
 
@@ -23,11 +23,11 @@
 | M4 对账与可查 | ✅ 已交付 | 余额 = Σ充值 − Σ余额支付；任意交易可追溯；账单正确 |
 | M5 支付通道对接 | ⏳ v0.2.0 | 支付回调自动入账，替代手动登记 |
 
-**质量**：18 个包全部通过单元测试；`internal/` 各包覆盖率 ≥95%（8 个包 100%），`cmd/server` 83.9%（剩余为进程入口与真实 PostgreSQL 连接分支）。设计文档见 [docs](../../apps/qtcloud-pay/src/provider/docs/index.md)。
+**质量**：18 个包全部通过单元测试；`internal/` 各包覆盖率 ≥95%（8 个包 100%），`cmd/server` 83.9%（剩余为进程入口与真实 PostgreSQL 连接分支）。设计文档见 [docs](../../../apps/qtcloud-pay/src/provider/docs/index.md)。
 
 ## 实现
 
-落地于 [provider](../../apps/qtcloud-pay/src/provider)，`internal/` 下领域模块分层（transport / service / repository / model + gorm/）：
+落地于 [provider](../../../apps/qtcloud-pay/src/provider)，`internal/` 下领域模块分层（transport / service / repository / model + gorm/）：
 
 | 模块 | 职责 | 关键设计 |
 |------|------|----------|
@@ -86,7 +86,7 @@
 
 ## 后续计划（v0.1.0 交付后）
 
-三个缺口分别源于**决策未完成**（计费规则与方案契约）、**有意后置**（支付渠道、复杂计量）、**范围之外**（运营后台/客户自助/权限审计），详见[产品回顾](../context/product-review.md)。排期依据三业务计费同构洞察（[billing-isomorphism](../insight/billing-isomorphism.md)）：按量计费是三个业务的共同原型而非云专属需求，v0.1.0 的 consume 已覆盖按量/按次扣费。
+三个缺口分别源于**决策未完成**（计费规则与方案契约）、**有意后置**（支付渠道、复杂计量）、**范围之外**（运营后台/客户自助/权限审计），详见[产品回顾](../../context/product-review.md)。排期依据三业务计费同构洞察（[billing-isomorphism](../../insight/billing-isomorphism.md)）：按量计费是三个业务的共同原型而非云专属需求，v0.1.0 的 consume 已覆盖按量/按次扣费。
 
 | 优先级 | 事项 | 理由 |
 |--------|------|------|

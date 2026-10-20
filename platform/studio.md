@@ -3,7 +3,7 @@
 管理人员操作台 — 把 [provider.md](provider.md) 的路线图表变成日常可执行的操作：进度跟踪、业务操作、参数配置、验收确认。
 
 - 使用者：管理人员（负责人：shishiyuan）
-- 配套文档：[provider.md](provider.md)（服务端路线图）、[意图](../intention/index.md)、[领域模型](../insight/model.md)
+- 配套文档：[provider.md](provider.md)（服务端路线图）、[意图](../../intention/index.md)、[领域模型](../../insight/model.md)
 - 使用方式：日常按「系统操作台」执行；里程碑完成后在「验收清单」打勾并记录日期；业务参数调整走「参数配置台」并登记
 
 ## 一、总览仪表盘（对「里程碑」表）
@@ -210,7 +210,7 @@ flowchart LR
 
 ### 6.4 数据与服务层
 
-- `lib/models/`：Account / Transaction / Coupon / Voucher / Order / BillingRule，与[领域模型](../insight/model.md)一一对应
+- `lib/models/`：Account / Transaction / Coupon / Voucher / Order / BillingRule，与[领域模型](../../insight/model.md)一一对应
 - `lib/services/pay_api.dart`：封装 §2.1 全部端点；金额统一 `AmountField` 转分、`MoneyText` 转元
 - 客户端不做账务计算，展示的数据均来自服务端校验后的结果
 

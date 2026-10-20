@@ -3,7 +3,7 @@
 命令行版管理人员操作台 —— 把 [provider.md](provider.md) 的操作入口变成终端命令，与 [studio.md](studio.md)（Flutter 桌面端）互为补充：GUI 适合人看，CLI 适合批量、定时、脚本化。
 
 - 使用者：管理人员 / 运维 / 自动化脚本（负责人：shishiyuan）
-- 配套文档：[provider.md](provider.md)（服务端路线图）、[studio.md](studio.md)（桌面端操作台）、[意图](../intention/index.md)、[领域模型](../insight/model.md)
+- 配套文档：[provider.md](provider.md)（服务端路线图）、[studio.md](studio.md)（桌面端操作台）、[意图](../../intention/index.md)、[领域模型](../../insight/model.md)
 - 使用方式：日常在终端执行「命令速查」；每日对账/验收走 `reconcile` / `milestone` 子命令；脚本与定时任务用 `--json` 输出 + 退出码判断
 
 ## 一、定位与边界

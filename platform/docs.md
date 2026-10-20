@@ -4,7 +4,7 @@
 
 - 负责人：shishiyuan
 - 配套文档：[provider.md](provider.md)（服务端路线图）、[studio.md](studio.md)（操作台）、[tests.md](tests.md)（测试用例）、[cli.md](cli.md)（CLI）
-- 事实源：端点与字段以集成测试（tests.md / `internal/itest`）为准，设计依据服务端设计文档（[src/provider/docs](../../apps/qtcloud-pay/src/provider/docs/index.md)）
+- 事实源：端点与字段以集成测试（tests.md / `internal/itest`）为准，设计依据服务端设计文档（[src/provider/docs](../../../apps/qtcloud-pay/src/provider/docs/index.md)）
 
 ## 一、现状
 
